@@ -1,35 +1,67 @@
-﻿namespace MMKMFP_LR1_Task_2
+﻿using System.Threading.Tasks;
+
+namespace MMKMFP_LR1_Task_2
 {
-    internal class Program
+    class BinaryAdder
     {
+        // Функция проверки валидности
         static bool IsValid(string s) => s.Length > 0 && s.Trim('0', '1').Length == 0;
-        static string Add(string a, string b)
+
+        // Одноразрядный двоичный сумматор
+        private bool Summator(bool A, bool B, bool P0, out bool P)
         {
-            // Остаток.
-            int c = 0;
-            var result = "";
-            for (int i = a.Length - 1; i >= 0; i--)
+            P = A && B || B && P0 || A && P0;
+            return A ^ B ^ P0;               
+        }
+
+        string AddBinary(string a, string b)
+        {
+            // Выравниваем числа по длине, приписывая нули слева
+            int maxLen = Math.Max(a.Length, b.Length);
+            a = a.PadLeft(maxLen, '0');
+            b = b.PadLeft(maxLen, '0');
+
+            bool carry = false;  
+            char[] result = new char[maxLen];
+
+            // Складываем начиная с младших разрядов (справа налево)
+            for (int i = maxLen - 1; i >= 0; i--)
             {
-                // Считаем сумму с учётом переноса с учётом char формата.
-                int sum = a[i] - '0' + b[i] - '0' + c;
-                result = (sum % 2) + result;
-                c = sum / 2;
+                // Преобразуем символы в логические значения
+                bool bitA = a[i] == '1';
+                bool bitB = b[i] == '1';
+
+                bool sum = Summator(bitA, bitB, carry, out carry);
+                result[i] = sum ? '1' : '0';
             }
-            //Приписываем слева остаток.
-            return c == 1 ? "1" + result : result;
+
+            string sumResult = new string(result);
+            // Если остался перенос - добавляем единицу в начало
+            return carry ? "1" + sumResult : sumResult;
         }
 
         static void Main()
         {
-            Console.WriteLine("Введите в двоичном формате слагаемые одиноковой длины в столбик:");
-            var a = Console.ReadLine();
-            var b = Console.ReadLine();
-            if (!IsValid(a) || !IsValid(b) || a.Length != b.Length)
+            BinaryAdder adder = new BinaryAdder();
+            Console.WriteLine("Двоичный сумматор");
+            // Ввод чисел с проверкой валидности
+            // Цикл продолжается пока ввод не станет валидным
+            string num1;
+            do
             {
-                Console.WriteLine("Ошибка ввода");
-                return;
-            }
-            Console.WriteLine(Add(a, b));
+                Console.Write("Введите первое двоичное число: ");
+                num1 = Console.ReadLine();
+            } while (!IsValid(num1)); 
+
+            string num2;
+            do
+            {
+                Console.Write("Введите второе двоичное число: ");
+                num2 = Console.ReadLine();
+            } while (!IsValid(num2));
+            // Выполняем сложение и выводим результат
+            string result = adder.AddBinary(num1, num2);
+            Console.WriteLine($"Результат: {num1} + {num2} = {result}");
         }
     }
 }
