@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36511.14 d17.14
+VisualStudioVersion = 17.14.36511.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMKMFP LR1 Task 1", "LR1 Task 1\MMKMFP LR1 Task 1.csproj", "{281E02BA-E289-4E04-BD9C-08F9677C649B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMKMFP LR1 Task 2", "MMKMFP LR1 Task 2\MMKMFP LR1 Task 2.csproj", "{3C4E00BE-E4EE-444D-A170-5F8710F014B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMKMFP LR2", "MMKMFP LR2\MMKMFP LR2.csproj", "{7E5A6F3B-BD17-4F8C-A163-E374F002DB83}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{3C4E00BE-E4EE-444D-A170-5F8710F014B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C4E00BE-E4EE-444D-A170-5F8710F014B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C4E00BE-E4EE-444D-A170-5F8710F014B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E5A6F3B-BD17-4F8C-A163-E374F002DB83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E5A6F3B-BD17-4F8C-A163-E374F002DB83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E5A6F3B-BD17-4F8C-A163-E374F002DB83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E5A6F3B-BD17-4F8C-A163-E374F002DB83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
