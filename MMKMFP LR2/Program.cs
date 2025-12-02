@@ -1,197 +1,83 @@
-﻿namespace MMKMFP_LR2
+﻿using System;
+using System.Collections.Generic;
+
+namespace MMKMFP_LR2
 {
-    // Состояния автомата
-    public enum State
+    // Состояния автомата (на русском)
+    enum State
     {
-        Неавторизованное = 1,
-        Авторизация = 2,
-        Меню = 3,
-        ОтображениеБаланса = 4,
-        СнятьДеньги = 5
+        Начало, // Start
+        КартаВставлена, // CardInserted
+        ПИНВведён, // PinEntered
+        Авторизован, // Authenticated
+        СуммаВведена, // AmountEntered
+        ДеньгиВыданы // Dispensed
     }
 
-    // События (входные сигналы)
-    public enum Event
+    // Цифровое соответствие действиям (1–6)
+    enum Event
     {
-        ВводНомераКарты,
-        УспешныйВводПароля,
-        НеуспешныйВводПароля,
-        УзнатьБаланс,
-        СнятьДеньги,
-        Выйти,
-        ВМеню,
-        Сумма
+        ВставитьКарту = 1,
+        ВвестиПИН,
+        Авторизоваться,
+        ВвестиСумму,
+        ВыдатьДеньги,
+        Сброс
+    }
+
+    class ATMStateMachine
+    {
+        private static readonly Dictionary<(State, Event), State> transitions = new()
+    {
+        { (State.Начало, Event.ВставитьКарту), State.КартаВставлена },
+        { (State.КартаВставлена, Event.ВвестиПИН), State.ПИНВведён },
+        { (State.ПИНВведён, Event.Авторизоваться), State.Авторизован },
+        { (State.Авторизован, Event.ВвестиСумму), State.СуммаВведена },
+        { (State.СуммаВведена, Event.ВыдатьДеньги), State.ДеньгиВыданы },
+        { (State.ДеньгиВыданы, Event.Сброс), State.Начало }
+    };
+
+        public State CurrentState { get; private set; } = State.Начало;
+
+        public void HandleEvent(Event evt)
+        {
+            if (transitions.TryGetValue((CurrentState, evt), out var next))
+            {
+                CurrentState = next;
+                Console.WriteLine($"Переход: {CurrentState}\n");
+            }
+            else
+            {
+                Console.WriteLine("Недопустимое действие.\n");
+            }
+        }
     }
 
     class Program
     {
-        // Таблица переходов: (текущее состояние, событие) -> следующее состояние
-        private static Dictionary<(State, Event), State> transitionTable = new Dictionary<(State, Event), State>
+        static void Main()
         {
-            {(State.Неавторизованное, Event.ВводНомераКарты), State.Авторизация},
-            {(State.Авторизация, Event.УспешныйВводПароля), State.Меню},
-            {(State.Авторизация, Event.НеуспешныйВводПароля), State.Авторизация},
-            {(State.Меню, Event.УзнатьБаланс), State.ОтображениеБаланса},
-            {(State.Меню, Event.СнятьДеньги), State.СнятьДеньги},
-            {(State.Меню, Event.Выйти), State.Неавторизованное},
-            {(State.ОтображениеБаланса, Event.ВМеню), State.Меню},
-            {(State.СнятьДеньги, Event.Сумма), State.ОтображениеБаланса},
-            {(State.СнятьДеньги, Event.ВМеню), State.Меню}
-        };
-
-        // Текущее состояние
-        private static State currentState = State.Неавторизованное;
-
-        // Баланс для демонстрации
-        private static decimal balance = 1000.0m;
-
-        static void Main(string[] args)
-        {
-            Console.WriteLine("БАНКОМАТ - Конечный автомат");
-            Console.WriteLine("===========================");
-
+            var atm = new ATMStateMachine();
+            Console.WriteLine("Модель банкомата (конечный автомат)");
             while (true)
             {
-                switch (currentState)
+                Console.WriteLine($"Текущее состояние: {atm.CurrentState}");
+                Console.WriteLine("Действия (введите номер):");
+                Console.WriteLine("1 — Вставить карту");
+                Console.WriteLine("2 — Ввести ПИН");
+                Console.WriteLine("3 — Авторизоваться");
+                Console.WriteLine("4 — Ввести сумму");
+                Console.WriteLine("5 — Выдать деньги");
+                Console.WriteLine("6 — Сброс");
+                var input = Console.ReadLine();
+                if (int.TryParse(input, out var code) && code >= 1 && code <= 6)
                 {
-                    case State.Неавторизованное:
-                        HandleUnauthorizedState();
-                        break;
-                    case State.Авторизация:
-                        HandleAuthorizationState();
-                        break;
-                    case State.Меню:
-                        HandleMenuState();
-                        break;
-                    case State.ОтображениеБаланса:
-                        HandleBalanceState();
-                        break;
-                    case State.СнятьДеньги:
-                        HandleWithdrawState();
-                        break;
-                }
-            }
-        }
-
-        static void HandleUnauthorizedState()
-        {
-            Console.WriteLine("\n--- НЕАВТОРИЗОВАННОЕ СОСТОЯНИЕ ---");
-            Console.WriteLine("1. Вставить карту (ввод номера карты)");
-
-            string input = Console.ReadLine();
-            if (input == "1")
-            {
-                ExecuteTransition(Event.ВводНомераКарты, "Карта принята");
-            }
-            else
-            {
-                Console.WriteLine("Неверный ввод");
-            }
-        }
-
-        static void HandleAuthorizationState()
-        {
-            Console.WriteLine("\n--- АВТОРИЗАЦИЯ ---");
-            Console.WriteLine("Введите пароль (1 - правильный, 2 - неправильный):");
-
-            string input = Console.ReadLine();
-            if (input == "1")
-            {
-                ExecuteTransition(Event.УспешныйВводПароля, "Авторизация успешна");
-            }
-            else if (input == "2")
-            {
-                ExecuteTransition(Event.НеуспешныйВводПароля, "Неверный пароль");
-            }
-            else
-            {
-                Console.WriteLine("Неверный ввод");
-            }
-        }
-
-        static void HandleMenuState()
-        {
-            Console.WriteLine("\n--- МЕНЮ ---");
-            Console.WriteLine("1. Узнать баланс");
-            Console.WriteLine("2. Снять деньги");
-            Console.WriteLine("3. Выйти");
-
-            string input = Console.ReadLine();
-            switch (input)
-            {
-                case "1":
-                    ExecuteTransition(Event.УзнатьБаланс, "Переход к балансу");
-                    break;
-                case "2":
-                    ExecuteTransition(Event.СнятьДеньги, "Переход к снятию денег");
-                    break;
-                case "3":
-                    ExecuteTransition(Event.Выйти, "Карта возвращена");
-                    break;
-                default:
-                    Console.WriteLine("Неверный ввод");
-                    break;
-            }
-        }
-
-        static void HandleBalanceState()
-        {
-            Console.WriteLine("\n--- БАЛАНС ---");
-            Console.WriteLine($"Ваш баланс: {balance} руб.");
-            Console.WriteLine("1. Вернуться в меню");
-
-            string input = Console.ReadLine();
-            if (input == "1")
-            {
-                ExecuteTransition(Event.ВМеню, "Возврат в меню");
-            }
-            else
-            {
-                Console.WriteLine("Неверный ввод");
-            }
-        }
-
-        static void HandleWithdrawState()
-        {
-            Console.WriteLine("\n--- СНЯТИЕ ДЕНЕГ ---");
-            Console.WriteLine("1. Ввести сумму для снятия");
-            Console.WriteLine("2. Вернуться в меню");
-
-            string input = Console.ReadLine();
-            if (input == "1")
-            {
-                Console.WriteLine("Введите сумму:");
-                if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0 && amount <= balance)
-                {
-                    balance -= amount;
-                    ExecuteTransition(Event.Сумма, $"Выдано {amount} руб.");
+                    atm.HandleEvent((Event)code);
                 }
                 else
                 {
-                    Console.WriteLine("Неверная сумма");
+                    Console.WriteLine("Неверный ввод.\n");
                 }
-            }
-            else if (input == "2")
-            {
-                ExecuteTransition(Event.ВМеню, "Возврат в меню");
-            }
-            else
-            {
-                Console.WriteLine("Неверный ввод");
-            }
-        }
-
-        static void ExecuteTransition(Event ev, string message)
-        {
-            Console.WriteLine($"> {message}");
-
-            if (transitionTable.TryGetValue((currentState, ev), out State nextState))
-            {
-                currentState = nextState;
-            }
-            else
-            {
-                Console.WriteLine("Недопустимый переход!");
             }
         }
     }

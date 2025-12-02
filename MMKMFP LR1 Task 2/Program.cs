@@ -39,7 +39,7 @@ namespace MMKMFP_LR1_Task_2
             // Если остался перенос - добавляем единицу в начало
             return carry ? "1" + sumResult : sumResult;
         }
- 
+  
         static void Main()
         {
             BinaryAdder adder = new BinaryAdder();
