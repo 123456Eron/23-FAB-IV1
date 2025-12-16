@@ -45,8 +45,6 @@ namespace ATMFiniteStateMachine
         /// <summary>
         /// Обработка входного сигнала и переход в новое состояние
         /// </summary>
-        /// <param name="input">Входной сигнал</param>
-        /// <returns>Выходной сигнал</returns>
         public Output ProcessInput(Input input)
         {
             Output output;
@@ -205,7 +203,7 @@ namespace ATMFiniteStateMachine
                 atm.ShowAllCommands();
 
                 Console.Write("\nВведите команду: ");
-                string input = Console.ReadLine()?.Trim().ToLower();
+                string input = Console.ReadLine()?.Trim().ToLower() ?? "";
 
                 // Парсинг входной команды
                 Input? parsedInput = ParseInput(input);
@@ -219,7 +217,7 @@ namespace ATMFiniteStateMachine
                 // Обработка входа
                 Console.WriteLine($"Входной сигнал: {atm.GetInputDescription(parsedInput.Value)}");
                 var output = atm.ProcessInput(parsedInput.Value);
-
+                    
                 Console.WriteLine($"Выходное действие: {atm.GetOutputDescription(output)}");
                 Console.WriteLine($"Новое состояние: {atm.GetStateDescription()}");
             }

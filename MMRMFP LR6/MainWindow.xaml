@@ -1,0 +1,52 @@
+﻿<Window x:Class="GasStationQueue.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="СМО АЗС" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <Button x:Name="StartButton"
+                    Width="150"
+                    Height="30"
+                    Content="Старт моделирования"
+                    Click="StartButton_OnClick"/>
+            <TextBlock Margin="20,0,0,0"
+                       VerticalAlignment="Center"
+                       Text="Число заявок в эксперименте: 20"/>
+        </StackPanel>
+
+        <DataGrid x:Name="RequestsGrid"
+                  Grid.Row="1"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="№"
+                                    Binding="{Binding Id}"
+                                    Width="40"/>
+                <DataGridTextColumn Header="Время прихода"
+                                    Binding="{Binding ArrivalTime}"
+                                    Width="*"/>
+                <DataGridTextColumn Header="Начало обслуживания"
+                                    Binding="{Binding ServiceStartTime}"
+                                    Width="*"/>
+                <DataGridTextColumn Header="Окончание обслуживания"
+                                    Binding="{Binding ServiceEndTime}"
+                                    Width="*"/>
+                <DataGridTextColumn Header="Отказ"
+                                    Binding="{Binding IsRejected}"
+                                    Width="60"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="2"
+                    Margin="0,10,0,0">
+            <TextBlock x:Name="SummaryTextBlock"
+                       Text="Результаты появятся после моделирования."/>
+        </StackPanel>
+    </Grid>
+</Window>
