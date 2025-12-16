@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace GasStationQueue
+﻿namespace GasStationQueue
 {
     public class QueueSystemSimulator
     {
