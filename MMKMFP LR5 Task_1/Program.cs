@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Lab5Variant6
+﻿namespace Lab5Variant6
 {
     internal static class Program
     {
@@ -20,7 +18,7 @@ namespace Lab5Variant6
         private static void SimulateTargetHits()
         {
             const int trials = 100;
-            const int outcomesCount = 2; // например, 4 равновероятных исхода попадания
+            const int outcomesCount = 2;
             int[] counts = new int[outcomesCount];
             Random random = new Random();
 
@@ -29,7 +27,7 @@ namespace Lab5Variant6
 
             for (int i = 1; i <= trials; i++)
             {
-                int outcome = random.Next(outcomesCount); // 0..outcomesCount-1
+                int outcome = random.Next(outcomesCount);
                 counts[outcome]++;
 
                 Console.WriteLine("{0}\t{1}", i, outcome);
@@ -45,7 +43,7 @@ namespace Lab5Variant6
         private static void SimulateEqualEvents()
         {
             const int trials = 100;
-            const int eventsCount = 3; // пример: 3 равновероятных события
+            const int eventsCount = 10;
             int[] counts = new int[eventsCount];
             Random random = new Random();
 
@@ -54,7 +52,7 @@ namespace Lab5Variant6
 
             for (int i = 1; i <= trials; i++)
             {
-                int eventIndex = random.Next(eventsCount); // 0..eventsCount-1
+                int eventIndex = random.Next(eventsCount);
                 counts[eventIndex]++;
 
                 Console.WriteLine("{0}\t{1}", i, eventIndex);
@@ -65,6 +63,8 @@ namespace Lab5Variant6
             {
                 Console.WriteLine("Событие {0}: {1}", i, counts[i]);
             }
+            Console.WriteLine($"Чётные числа: {counts[0]+ counts[2] + counts[4] + counts[6] + counts[8]}");
+            Console.WriteLine($"Чётные числа: {counts[1] + counts[3] + counts[5] + counts[7] + counts[9]}");
         }
     }
 }
